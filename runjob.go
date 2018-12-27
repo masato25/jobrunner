@@ -25,12 +25,16 @@ type Func func()
 
 func (r Func) Run() { r() }
 
-func Schedule(spec string, job cron.Job) error {
+func Schedule(spec string, job cron.Job, name ...string) error {
 	sched, err := cron.Parse(spec)
 	if err != nil {
 		return err
 	}
-	MainCron.Schedule(sched, New(job))
+	newJob := New(job)
+	if len(name) != 0 {
+		newJob.Name = name[0]
+	}
+	MainCron.Schedule(sched, newJob)
 	return nil
 }
 
